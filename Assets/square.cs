@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using TMPro;
@@ -18,157 +18,195 @@ public class square : MonoBehaviour
 
     public Transform target;
 
-    /* private void Start()
-     {
-         origin = transform.position;
-         direction = transform.right;
 
-         //for ( i = origin.x + boxSize; i < 10f; i += boxSize)
-         //{
-         //    isHit = Physics.BoxCast(new Vector3(i, origin.y, origin.z), transform.lossyScale / 2f, direction, out hit, transform.rotation, boxSize);
-
-
-         //}
-     }
-
-     private void OnDrawGizmos()
-     {
-
-
-         *//*    bool isHit = Physics.BoxCast(origin, transform.lossyScale / 2f, direction, out hit, transform.rotation, maxDistance);
-             if (isHit)
-             {
-                 Gizmos.color = Color.red;
-                 Gizmos.DrawRay(origin, direction * hit.distance);
-                 Gizmos.DrawWireCube(origin + direction * hit.distance, transform.lossyScale / 2f);
-             }
-             else
-             {
-                 Gizmos.color = Color.green;
-                 Gizmos.DrawRay(origin, direction * hit.distance);
-             }*//*
-
-         if (isHit)
-         {
-             Gizmos.color = Color.red;
-             Gizmos.DrawRay(new Vector3(i, origin.y, origin.z), direction * hit.distance);
-             Gizmos.DrawWireCube(new Vector3(i, origin.y, origin.z) + direction * hit.distance, transform.lossyScale / 2f);
-         }
-         else
-         {
-             Gizmos.color = Color.green;
-             Gizmos.DrawRay(new Vector3(i, origin.y, origin.z), direction * boxSize);
-         }
-
-
-     }*/
     private void Start()
     {
         origin = transform.position;
-        Debug.Log(CheckUpFirst());
-        //CheckRightFirst();
+        CheckUpFirst();
+        // CheckRightFirst();
 
     }
+
     bool CheckUpFirst()
     {
-        for (Vector3 v = new Vector3(0, boxSize, 0); origin.y + v.y < target.position.y; v += v)
+        if (origin.x == target.position.x)
         {
-            // check up lan dau
-
-            bool isHit = Physics.BoxCast(origin
-                , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), v
-                , out hit, Quaternion.identity, v.magnitude);
-            Debug.Log("up1");
-
-            Debug.Log(isHit);
-            if (isHit)
+            for (Vector3 v = new Vector3(0, boxSize, 0); origin.y + v.y < target.position.y; v += v)
             {
-                if (hit.collider.gameObject.transform == target)
+                bool isHit = Physics.BoxCast(origin
+                   , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), v
+                   , out hit, Quaternion.identity, v.magnitude);
+                Debug.Log("up1");
+                if (isHit)
                 {
-                    Debug.Log(origin + " and " + target.position);
-                    return true;
-                }
-                else
-                {
-                    break;
+                    if (hit.collider.gameObject.transform != target)
+                    {
+                        return false;
+                    }
                 }
             }
-
-            // neu hit thi check right
-
-            isHit = Physics.BoxCast(origin + v
-                , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), new Vector3(1, 0, 0)
-                , out hit, Quaternion.identity, target.position.x - (origin + v).x);
-
-            Debug.Log("right1");
-
-            if (isHit)
+            Debug.Log(origin + " and " + target.position);
+            return true;
+        }
+        else
+        {
+            for (Vector3 v = new Vector3(0, boxSize, 0); origin.y + v.y < 12; v += v)
             {
-                if (hit.collider.gameObject.transform == target)
+                // check up lan dau
+
+                bool isHit = Physics.BoxCast(origin
+                    , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), v
+                    , out hit, Quaternion.identity, v.magnitude);
+                Debug.Log("up1");
+
+                if (isHit)
                 {
-                    Debug.Log(origin + " and " + v + " and " + target.position);
-
-                    return true;
-                }
-                else
-                {
-                    Debug.Log(hit.collider.gameObject.name);
-                    continue;
-                }
-            }
-
-            // neu hit thi check up lan nua
-
-            isHit = Physics.BoxCast(origin + v + new Vector3(target.position.x - (origin + v).x, 0, 0)
-                , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), new Vector3(0, 1, 0)
-                , out hit, Quaternion.identity, target.position.y - (origin + v).y);
-
-            if (isHit)
-            {
-                //Debug.Log("up2" + origin + v + new Vector3(target.position.x - (origin + v).x, 0, 0));
-                if (hit.collider.gameObject.transform == target)
-                {
-                    Debug.Log(origin + " and " + v + " and " + new Vector3(target.position.x, v.y, target.position.z) + " and " + target.position);
-                    return true;
+                    if (hit.collider.gameObject.transform == target)
+                    {
+                        Debug.Log(origin + " and " + target.position);
+                        return true;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
 
+                // neu hit thi check right
+
+
+                isHit = Physics.BoxCast(origin + v
+                    , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), new Vector3(1, 0, 0)
+                    , out hit, Quaternion.identity, target.position.x - (origin + v).x);
+
+                Debug.Log("right1");
+
+                if (isHit)
+                {
+                    if (hit.collider.gameObject.transform == target)
+                    {
+                        Debug.Log(origin + " and " + v + " and " + target.position);
+
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.Log(hit.collider.gameObject.name);
+                        continue;
+                    }
+                }
+                //new Vector3(v.x, v.y - target.position.y, v.z);
+                // neu hit thi cast thang vao target
+                isHit = Physics.BoxCast(origin + v + new Vector3(target.position.x - (origin + v).x, 0, 0)
+                    , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), new Vector3(0, target.position.y - v.y, 0)
+                    , out hit, Quaternion.identity, new Vector3(0, target.position.y - (origin + v).y, 0).magnitude);
+                Debug.Log("up2");
+                if (isHit)
+                {
+                    Debug.Log(" hmmm");
+                    //Debug.Log("up2" + origin + v + new Vector3(target.position.x - (origin + v).x, 0, 0));
+                    if (hit.collider.gameObject.transform == target)
+                    {
+                        Debug.Log(origin + " and " + v + " and " + new Vector3(target.position.x, v.y, target.position.z) + " and " + target.position);
+                        return true;
+                    }
+
+                }
             }
         }
+
         return false;
     }
 
-    void CheckRightFirst()
+    /*bool CheckRightFirst()
     {
-        /*   Debug.Log(origin);
-           Debug.Log(target.position);*/
-        for (Vector3 v = new Vector3(boxSize, 0, 0); origin.x + v.x < target.position.x; v += v)
+        // check 2 điểm nếu cùng y
+        if (origin.y == target.position.y)
         {
-            Debug.Log(v);
-            // check right lan dau
-            bool isHit = Physics.BoxCast(origin
-                , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), v
-                , out hit, Quaternion.identity, v.magnitude);
-
-            Debug.Log("right1");
-            Debug.Log(isHit);
-            if (isHit)
+            for (Vector3 v = new Vector3(boxSize, 0, 0); origin.x + v.x < target.position.x; v += v)
             {
-                Debug.Log(hit.collider.gameObject.name);
-                if (hit.collider.gameObject.transform == target)
+                bool isHit = Physics.BoxCast(origin
+                   , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), v
+                   , out hit, Quaternion.identity, v.magnitude);
+                Debug.Log("right1");
+                if (isHit)
                 {
-                    Debug.Log(origin + " and " + target.position);
-                    // Debug.Log("return true");
-                    return;
-                }
-                else
-                {
-                    break;
+                    if (hit.collider.gameObject.transform != target)
+                    {
+                        return false;
+                    }
                 }
             }
-
-
+            Debug.Log(origin + " and " + target.position);
+            return true;
         }
-        //return false;
-    }
+        else
+        {
+            for (Vector3 v = new Vector3(boxSize, 0, 0); origin.x + v.x < target.position.x; v += v)
+            {
+                // check right lan dau
+
+                bool isHit = Physics.BoxCast(origin
+                    , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), v
+                    , out hit, Quaternion.identity, v.magnitude);
+                Debug.Log("right1");
+
+                if (isHit)
+                {
+                    if (hit.collider.gameObject.transform == target)
+                    {
+                        Debug.Log(origin + " and " + target.position);
+                        return true;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                // neu hit thi check up
+
+                isHit = Physics.BoxCast(origin + v
+                    , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), new Vector3(0, 1, 0)
+                    , out hit, Quaternion.identity, target.position.y - (origin + v).y);
+
+                Debug.Log("up1");
+
+                if (isHit)
+                {
+                    if (hit.collider.gameObject.transform == target)
+                    {
+                        Debug.Log(origin + " and " + v + " and " + target.position);
+
+                        return true;
+                    }
+                    else
+                    {
+                        Debug.Log(hit.collider.gameObject.name);
+                        continue;
+                    }
+                }
+
+                // neu hit thi check right lan nua
+
+                isHit = Physics.BoxCast(origin + v + new Vector3(0, target.position.y - (origin + v).y, 0)
+                    , new Vector3(boxSize / 4f, boxSize / 4f, boxSize / 4f), new Vector3(1, 0, 0)
+                    , out hit, Quaternion.identity, target.position.x - (origin + v).x);
+                Debug.Log("right2");
+                if (isHit)
+                {
+                    if (hit.collider.gameObject.transform == target)
+                    {
+                        Debug.Log(origin + " and " + v + " and " + new Vector3(target.position.x, v.y, target.position.z) + " and " + target.position);
+                        return true;
+                    }
+
+                }
+            }
+        }
+
+        return false;
+    }*/
+
 
 }
